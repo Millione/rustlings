@@ -11,8 +11,6 @@ struct Person {
     age: usize,
 }
 
-// I AM NOT DONE
-
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
 // 2. Split the given string on the commas present in it
@@ -24,8 +22,23 @@ struct Person {
 // If everything goes well, then return a Result of a Person object
 
 impl FromStr for Person {
-    type Err = Box<dyn error::Error>;
+    type Err = String;
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        let mut split = s.splitn(2, ',');
+        if let Some(name) = split.next() {
+            if name.len() == 0 {
+                return Err(String::from("error"));
+            }
+            if let Some(age_str) = split.next() {
+                if let Ok(age) = age_str.parse() {
+                    return Ok(Person {
+                        name: name.to_string(),
+                        age,
+                    });
+                }
+            }
+        }
+        Err(String::from("error"))
     }
 }
 
